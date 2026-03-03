@@ -99,7 +99,7 @@ public class Main {
                                 System.out.println(m.getName() + "的故事有：");
                                 for (int k = 0; k < m.getStoryCount(); k++) {
                                     Story s = m.getStory(k);
-                                    System.out.println((k + 1) + ". " + s.getTitle() + " (类型: " + s.getType() + ")");
+                                    System.out.println((k + 1) + ". " + s.getTitle() + " (类型: " + s.getType() + " | 时间: " + s.getCreateTime() + ")");
                                 }
                                 System.out.println("你想阅读...?(输入编号读取，输入 0 退回菜单)");
                                 int readChoice = sc.nextInt();
