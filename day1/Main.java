@@ -1,16 +1,18 @@
 package works.day1;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 //要不要用Jframe做个UI？
-public class MonsterAndStory {
+public class Main {
     public static void main(String[] args) {
         Scanner sc=new Scanner(System.in);
         ArrayList<Monster> monsters=new ArrayList<>();
         while(true){
-            System.out.println("欢迎来到小怪兽的故事图书馆！");
+            System.out.println("欢迎来到小怪兽的故事集");
             System.out.println("请选择操作：");
             System.out.println("1. 添加小怪兽");
             System.out.println("2. 查看小怪兽列表");
@@ -87,10 +89,37 @@ public class MonsterAndStory {
                     String monsterName = sc.next();
                     boolean found = false;//给个标记得了
                     for (Monster m : monsters) {
-                        if (m.getName().equals(monsterName)) {
-                            System.out.println(m.getName() + "的故事有：" + m.printStoriesTitle());
-                            found = true;
-                            break;
+                        try{
+                            if (m.getName().equals(monsterName)) {
+                                if(m.getStoryCount() == 0){
+                                    System.out.println(m.getName() + "还没有故事");
+                                    found = true;
+                                    break;
+                                }
+                                System.out.println(m.getName() + "的故事有：");
+                                for (int k = 0; k < m.getStoryCount(); k++) {
+                                    Story s = m.getStory(k);
+                                    System.out.println((k + 1) + ". " + s.getTitle() + " (类型: " + s.getType() + ")");
+                                }
+                                System.out.println("你想阅读...?(输入编号读取，输入 0 退回菜单)");
+                                int readChoice = sc.nextInt();
+                                if (readChoice > 0 && readChoice <= m.getStoryCount()) {
+                                    Story toRead = m.getStory(readChoice - 1);
+                                    System.out.println("\n==========【" + toRead.getTitle() + "】==========");
+                                    try {
+                                        // stream流读取并打印
+                                        Files.lines(toRead.getStorys().toPath()).forEach(System.out::println);
+                                    } catch (IOException e) {
+                                        System.out.println("读取故事文件内容出错：" + e.getMessage());
+                                    }
+                                    System.out.println("==============================\n");
+                                }
+                                found = true;
+                                break;
+                            }
+                        }catch (java.util.InputMismatchException e) {
+                            System.out.println("请输入数字");
+                            sc.nextLine();
                         }
                     }
                     if (!found) {
@@ -104,7 +133,7 @@ public class MonsterAndStory {
                     }
                     System.out.println("图书馆共有 " + sum + " 个小怪兽的故事。");}
                 case 6 -> {
-                        System.out.println("感谢使用小怪兽故事图书馆！");
+                        System.out.println("感谢使用小怪兽故事集");
                         sc.close();//记得
                         return ;
                     }

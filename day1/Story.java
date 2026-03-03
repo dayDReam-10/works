@@ -1,6 +1,12 @@
 package works.day1;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+
 //故事有类型，标题，内容
 //主要是这个故事集合
 public class Story {
@@ -43,8 +49,27 @@ public class Story {
         return storys;
     }
 
-    public void setStorys(File storys) {
-        this.storys = storys;
+    public void setStorys(File sourceFile) throws InputNotRightException {
+        if (!sourceFile.exists() || !sourceFile.isFile()) {
+            throw new InputNotRightException("指定的故事文件不存在或不是标准文件，请检查路径：" + sourceFile.getPath());
+        }
+        
+        // 目标文件夹路径
+        File targetDir = new File("works/day1/storys");
+        if (!targetDir.exists()) {
+            targetDir.mkdirs(); // 如果路径不存在则创建
+        }
+
+        // 构建目标文件对象（保持原文件名）
+        File targetFile = new File(targetDir, sourceFile.getName());
+
+        try {
+            // 将用户给定的源文件内容拷贝/保存到我们的 storys 文件夹下
+            Files.copy(sourceFile.toPath(), targetFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            this.storys = targetFile; // 将对象绑定的文件更新为我们的本地持久化副本
+        } catch (IOException e) {
+            throw new InputNotRightException("文件上传保存失败，原因: " + e.getMessage());
+        }
     }
 
 }

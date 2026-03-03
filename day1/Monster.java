@@ -14,7 +14,7 @@ public class Monster {
 
     public Monster(String name, int age) throws InputNotRightException {
         if (name == null || name.trim().isEmpty()) {
-            throw new InputNotRightException("小怪兽名称不能为空！");
+            throw new InputNotRightException("小怪兽名称不能为空");
         }
         if (age < 0) {
             throw new InputNotRightException("小怪兽年龄不能为负数！");
@@ -45,6 +45,17 @@ public class Monster {
             titles.add(s.getTitle());
         }
         return titles;// 返回每个故事的标题
+    }
+
+    public int getStoryCount() {
+        return stories.size();
+    }
+
+    public Story getStory(int num) {
+        if (num >= 0 && num < stories.size()) {
+            return stories.get(num);
+        }
+        return null;
     }
 
     public void addStory(Story story) throws StoryNotRightException {
