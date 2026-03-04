@@ -1,13 +1,15 @@
 package works.day1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 //每个小怪兽有自己的故事集（复数个）
 //每个记得判断空不空！
-public class Monster {
+public class Monster implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private int age;
-    private ArrayList<Story> stories = new ArrayList<>();// 优化小怪兽们的故事集，放个龙族啥的 我的随笔
+    private ArrayList<Story> stories = new ArrayList<>();// 优化小怪兽们的故事集
 
     public Monster() {
     }
@@ -17,7 +19,7 @@ public class Monster {
             throw new InputNotRightException("小怪兽名称不能为空");
         }
         if (age < 0) {
-            throw new InputNotRightException("小怪兽年龄不能为负数！");
+            throw new InputNotRightException("年龄为负？");
         }
         this.name = name;
         this.age = age;
@@ -57,11 +59,17 @@ public class Monster {
         }
         return null;
     }
-
+//！为了更好的配合那个主菜单的输入，写到这在调用好像有点乱
     public void addStory(Story story) throws StoryNotRightException {
         if (story == null) {//验证写到Story类，换了个思路
             throw new StoryNotRightException("故事对象不能为空");
         }
         this.stories.add(story);
+    }
+
+    public void removeStory(int index) {
+        if (index >= 0 && index < stories.size()) {
+            stories.remove(index);
+        }
     }
 }

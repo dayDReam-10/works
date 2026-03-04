@@ -2,6 +2,7 @@ package works.day1;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
@@ -9,20 +10,21 @@ import java.util.Date;
 
 //故事有类型，标题，内容
 //主要是这个故事集合
-public class Story {
+public class Story implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String type;// adventure,happy,sad
     private String title;
     private File storys = new File("day1/storys");
     private String createTime;
 
     public Story() {
-        this.createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
-    public Story(String type, String title, File storys) {
-        this.type = type;
-        this.title = title;
-        this.storys = storys;
+    public Story(String type, String title, File sourceFile) throws InputNotRightException {
+        // 复用做验证
+        this.setType(type);
+        this.setTitle(title);
+        this.setStorys(sourceFile);
         this.createTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
     }
 
@@ -63,6 +65,11 @@ public class Story {
 
         // 保持原文件名
         File targetFile = new File("works/day1/storys", sourceFile.getName());
+
+        // 确保目标文件夹存在，防止缺少空文件夹报错
+        if (!targetFile.getParentFile().exists()) {
+            targetFile.getParentFile().mkdirs();
+        }
 
         try {
             // 将内容保存到 storys 文件夹下
