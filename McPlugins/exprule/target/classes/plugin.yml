@@ -1,0 +1,4 @@
+name: ExpRule
+version: 1.0
+main: com.mcplugins.exprule.Main
+api-version: '1.21'
