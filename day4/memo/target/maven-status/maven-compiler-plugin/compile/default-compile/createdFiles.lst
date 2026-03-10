@@ -1,0 +1,10 @@
+com\memosystem\Register.class
+com\memosystem\Utils.class
+com\memosystem\addMemo.class
+com\memosystem\GetMemos.class
+com\memosystem\UpdateMemo.class
+com\memosystem\User.class
+com\memosystem\Dao.class
+com\memosystem\DeleteMemo.class
+com\memosystem\Login.class
+com\memosystem\UploadServlet.class
