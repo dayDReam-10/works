@@ -1,11 +1,9 @@
 package com.memosystem;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-//prestatement防sql
+//使用preparedStatement预编译，防止sqli
 
 public class Dao {
 
@@ -36,7 +34,6 @@ public class Dao {
             ps.setString(1, u);
             ps.setString(2, p);
             return ps.executeUpdate() > 0;//偷学的一招
-
         }
     }
 
@@ -61,6 +58,7 @@ public class Dao {
             ps.executeUpdate();
         }
     }
+
     // update nano
     public void updateMemo(int id, String title, String content) throws Exception {
         String sql = "UPDATE memos SET title = ?, content = ? WHERE id = ?";
@@ -72,6 +70,7 @@ public class Dao {
             ps.executeUpdate();
         }
     }
+
     // IO image
     public void updateAvatar(int userId, String fileName) throws Exception {
         String sql = "UPDATE users SET avatar = ? WHERE id = ?";
@@ -82,19 +81,27 @@ public class Dao {
             ps.executeUpdate();
         }
     }
+
     public String get(int userId) throws Exception {
-    StringBuilder sb = new StringBuilder();
-    String sql = "SELECT title, content FROM memos WHERE user_id = ?";
-    try (Connection conn = Utils.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-        ps.setInt(1, userId);
-        ResultSet rs = ps.executeQuery();
-        while (rs.next()) {
-            sb.append("标题: ").append(rs.getString("title"))
-              .append(" | 内容: ").append(rs.getString("content"))
-              .append("\n---\n"); // 用分隔符切开
+        StringBuilder sb = new StringBuilder();
+        String sql = "SELECT id, title, content FROM memos WHERE user_id = ?";
+        try (Connection conn = Utils.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String t = rs.getString("title");
+                String c = rs.getString("content");
+                sb.append("<div style='border-bottom:1px solid #ccc;padding:10px;'>")
+                  .append("<b>标题: </b>").append(t)
+                  .append(" | <b>内容: </b>").append(c)
+                  .append("<br>")
+                  .append("<a href='deleteMemo?id=").append(id).append("' onclick='return confirm(\"真删？\")' style='color:red;'>[删除]</a> ")
+                  .append("<a href='editMemo.jsp?id=").append(id).append("&t=").append(t).append("&c=").append(c).append("'>[修改]</a>")
+                  .append("</div>");
+            }
         }
+        return sb.toString();
     }
-    return sb.toString();
-}
 }

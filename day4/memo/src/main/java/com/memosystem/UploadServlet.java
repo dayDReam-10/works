@@ -17,6 +17,8 @@ public class UploadServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
+        request.setCharacterEncoding("UTF-8");
+        
         try {
             User user = (User) request.getSession().getAttribute("user");
             if (user == null) {
@@ -25,16 +27,27 @@ public class UploadServlet extends HttpServlet {
             }
 
             Part part = request.getPart("avatarFile");
-            String fileName = UUID.randomUUID().toString() + "_" + part.getSubmittedFileName();
-            
-            String savePath = getServletContext().getRealPath("/upload");
-            File fileDir = new File(savePath);
-            if (!fileDir.exists()) fileDir.mkdirs();
-            
-            part.write(savePath + File.separator + fileName);
-            
-            dao.updateAvatar(user.getId(), fileName);
-            user.setAvatar(fileName);
+            String header = part.getHeader("content-disposition");
+            String oldFileName = "";
+            for (String temp : header.split(";")) {
+                if (temp.trim().startsWith("filename")) {
+                    oldFileName = temp.substring(temp.indexOf('=') + 1).trim().replace("\"", "");
+                }
+            }
+
+            if (oldFileName != null && !oldFileName.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + oldFileName;
+                String savePath = getServletContext().getRealPath("/upload");
+                File fileDir = new File(savePath);
+                if (!fileDir.exists()) {
+                    fileDir.mkdirs();
+                }
+                
+                part.write(savePath + File.separator + fileName);
+                
+                dao.updateAvatar(user.getId(), fileName);
+                user.setAvatar(fileName);
+            }
             
             response.sendRedirect("index.jsp");
         } catch (Exception e) {

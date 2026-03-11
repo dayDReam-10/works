@@ -18,12 +18,13 @@ public class UpdateMemo extends HttpServlet {
             String title = request.getParameter("title");
             String content = request.getParameter("content");
             
+            // 调你的 update nano
             dao.updateMemo(id, title, content);
             
             response.sendRedirect("index.jsp");
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("index.jsp?error=upd_fail");
+            response.sendRedirect("index.jsp?error=update_fail");
         }
     }
 }

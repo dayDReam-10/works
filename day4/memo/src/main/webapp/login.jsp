@@ -11,6 +11,12 @@
         <input type="submit" value="Login">
     </form>
 
+    <p>还没有账号？<a href="register.jsp">立即注册</a></p>
+
+    <% if("success".equals(request.getParameter("msg"))) { %>
+        <p style="color:green">Registration successful! Please login.</p>
+    <% } %>
+
     <% if("1".equals(request.getParameter("error"))) { %>
         <p style="color:red">Invalid username or password.</p>
     <% } %>

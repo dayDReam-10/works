@@ -19,9 +19,12 @@ public class Register extends HttpServlet {
             String u = request.getParameter("username");
             String p = request.getParameter("password");
             
+            // 调用 Dao 里的 register 方法插入数据
             if (dao.register(u, p)) {
+                // 注册成功，跳回登录页并给个成功提示
                 response.sendRedirect("login.jsp?msg=success");
             } else {
+                // 注册失败（通常是用户名已存在）
                 response.sendRedirect("register.jsp?error=1");
             }
         } catch (Exception e) {
